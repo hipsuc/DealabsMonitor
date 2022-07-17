@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import random
 
 from typing import Tuple, Union, Any
 from time import sleep
@@ -9,18 +10,32 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 
 user_agent = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"}
 
+def get_proxies() -> list:
+    proxies = []
+    with open("proxies.txt", "r", encoding="utf-8") as txtfile:
+        for line in txtfile:
+            proxy = line.rstrip("\n").split(":")
+            proxies.append({
+                "http": "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1],
+                "https": "https://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1],
+            })
+    return proxies
+
 class DealabsMonitor:
 
     def __init__(self, group : str, webhook_url : str, sleep_delay : int) -> None:
         self.group = group
         self.webhook_url = webhook_url
         self.sleep_delay = sleep_delay
+        self.proxies = get_proxies()
         self.__productsAlreadyPinged = []
 
     def __getProducts(self) -> list:
         list_products = []
         try:
             with requests.Session() as s:
+                if self.proxies: # Check if the proxies list isn't empty
+                    s.proxies.update(self.proxies[random.randint(0, len(self.proxies) - 1)])
                 get = s.get(f"https://www.dealabs.com/groupe/{self.group}?page=1&ajax=true&layout=horizontal", headers=user_agent)
                 if get.ok:
                     json_resp = json.loads(get.text)
