@@ -5,8 +5,8 @@ from time import sleep
 monitors = []
 threads = []
 
-monitors.append(DealabsMonitor("high-tech", "https://ptb.discord.com/api/webhooks/909822966748020786/sxNOHmPD1ZmjKtDdUp6dpS8r6Wt-mlMncnQj946prdQ34_W_qbx622rWI70TVL8ce8AF", 30))
-monitors.append(DealabsMonitor("erreur-de-prix", "https://ptb.discord.com/api/webhooks/909822966748020786/sxNOHmPD1ZmjKtDdUp6dpS8r6Wt-mlMncnQj946prdQ34_W_qbx622rWI70TVL8ce8AF", 30))
+monitors.append(DealabsMonitor("high-tech", "your webhook", 30))
+monitors.append(DealabsMonitor("erreur-de-prix", "your webhook", 30))
 
 def main():
     for monitor in monitors:
